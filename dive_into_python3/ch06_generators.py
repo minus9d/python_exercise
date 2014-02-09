@@ -35,3 +35,30 @@ print (plural('fly'))
 print (plural('boy'))
 print (plural('dot'))
 
+
+# ジェネレータを使った関数
+def make_counter(x):
+    print('entering make_counter')
+    while True:
+        yield x
+        print('incrementing x')
+        x = x + 1
+
+counter = make_counter(2)
+print(next(counter))
+print(next(counter))
+print(next(counter))
+
+
+# ジェネレータの別の例
+def fibonacci(max):
+    a, b = 0, 1
+    while a < max:
+        yield a
+        a, b = b, a+b
+fibo = fibonacci(1000)
+for n in fibonacci(1000):
+    print(n, end = ' ')
+print()
+print(list(fibonacci(1000)))
+
