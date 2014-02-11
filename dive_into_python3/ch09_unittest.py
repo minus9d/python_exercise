@@ -66,8 +66,17 @@ class KnownValues(unittest.TestCase):
     def test_to_roman_known_values(self):
         '''to_roman should give known result with known input'''
         for integer, numeral in self.known_values:
-            result = roman1.to_roman(integer)
+            result = ch09_roman1.to_roman(integer)
             self.assertEqual(numeral, result)
+
+
+class ToRomanBadInput(unittest.TestCase):
+    def test_too_large(self):
+        '''to_roman should fail with large input'''
+        # 創出されるべき例外、テスト対象の関数、関数に渡す引数
+        self.assertRaises(ch09_roman1.OutOfRangeError, ch09_roman1.to_roman, 4000)
+    
+
 
 if __name__ == '__main__':
     unittest.main()
