@@ -75,8 +75,12 @@ class ToRomanBadInput(unittest.TestCase):
         '''to_roman should fail with large input'''
         # 創出されるべき例外、テスト対象の関数、関数に渡す引数
         self.assertRaises(ch09_roman1.OutOfRangeError, ch09_roman1.to_roman, 4000)
-    
-
+    def test_zero(self):
+        self.assertRaises(ch09_roman1.OutOfRangeError, ch09_roman1.to_roman, 0)
+    def test_negative(self):
+        self.assertRaises(ch09_roman1.OutOfRangeError, ch09_roman1.to_roman, -1)
+    def test_not_integer(self):
+        self.assertRaises(ch09_roman1.NotIntegerError, ch09_roman1.to_roman, 0.5)
 
 if __name__ == '__main__':
     unittest.main()

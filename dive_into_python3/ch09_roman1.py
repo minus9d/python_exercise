@@ -17,8 +17,10 @@ roman_numeral_map = (('M',  1000),
 
 def to_roman(n):
     '''convert integer to Roman numeral'''
-    if n > 3999:
-        raise OutOfRangeError('number out of range (must be less than 4000)')
+    if not (0 < n < 4000):
+        raise OutOfRangeError('number out of range (must be 1..3999')
+    if not isinstance(n, int):
+        raise NotIntegerError('non-integers can not be converted')
     
     result = ''
     for numeral, integer in roman_numeral_map:
@@ -28,7 +30,8 @@ def to_roman(n):
     return result
 
 # 例外の定義
-class OutOfRangeError(ValueError):
-    pass
+class OutOfRangeError(ValueError): pass
+# 例外の定義
+class NotIntegerError(ValueError): pass
 
 
