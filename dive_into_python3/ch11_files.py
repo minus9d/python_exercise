@@ -2,6 +2,8 @@
 
 import locale
 import io
+import gzip
+import sys
 
 # デフォルトの文字コードを取得
 # e.g. 'UTF-8'
@@ -73,10 +75,37 @@ with open('./ch11_image.png', mode='rb') as a_image:
 
 # 擬似ファイルからの読み込み
 a_string = '吾輩は猫である'
-a_file = io.StringIO(a_string)
-print(a_file.read())
-a_file.seek(0)
-print(len(a_file.read()))
-a_file.close()
+with io.StringIO(a_string) as a_file:
+    print(a_file.read())
+    a_file.seek(0)
+    print(len(a_file.read()))
 
 
+# gzipの読み書きも可能らしいがうまく動かない
+# 文字コードの指定は4.3から可能らしい
+# http://stackoverflow.com/questions/1883604/reading-utf-8-characters-from-a-gzip-file-in-python
+# with gzip.open('ch11_japanese.txt.gz', mode = 'wb) as z_file:
+    #z_file.write('この書生というのは時々我々を捕えて煮て食うという話である。')
+
+
+# stdio
+for i in range(3):
+    # 改行なし
+    sys.stdout.write('word')
+    
+
+# __enter__()と__exit__()を定義することでコンテクストマネージャになれてwithが使える
+class RedirectStdoutTo:
+    def __init__(self, out_new):
+        self.out_new = out_new
+    def __enter__(self):
+        self.out_old = sys.stdout
+        sys.stdout = self.out_new
+    def __exit__(self, *args):
+        sys.stdout = self.out_old
+
+print ('A')
+# withの入れ子を一行で書いている
+with open('out.log', mode='w', encoding='utf-8') as a_file, RedirectStdoutTo(a_file):
+    print ('書き込みました')
+    
