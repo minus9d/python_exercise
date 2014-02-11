@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-import ch09_roman1
+import ch09_roman
 
 class KnownValues(unittest.TestCase):
     known_values = ( (1, 'I'),
@@ -66,20 +66,20 @@ class KnownValues(unittest.TestCase):
     def test_to_roman_known_values(self):
         '''to_roman should give known result with known input'''
         for integer, numeral in self.known_values:
-            result = ch09_roman1.to_roman(integer)
+            result = ch09_roman.to_roman(integer)
             self.assertEqual(numeral, result)
 
     def test_from_roman_known_values(self):
         '''from_roman should give known result with known input'''
         for integer, numeral in self.known_values:
-            result = ch09_roman1.from_roman(numeral)
+            result = ch09_roman.from_roman(numeral)
             self.assertEqual(integer, result)
 
 class RoundtripCheck(unittest.TestCase):
     def test_roundtrip(self):
         for integer in range(1, 4000):
-            numeral = ch09_roman1.to_roman(integer)
-            result = ch09_roman1.from_roman(numeral)
+            numeral = ch09_roman.to_roman(integer)
+            result = ch09_roman.from_roman(numeral)
             self.assertEqual(integer, result)
 
 
@@ -87,30 +87,30 @@ class ToRomanBadInput(unittest.TestCase):
     def test_too_large(self):
         '''to_roman should fail with large input'''
         # 創出されるべき例外、テスト対象の関数、関数に渡す引数
-        self.assertRaises(ch09_roman1.OutOfRangeError, ch09_roman1.to_roman, 4000)
+        self.assertRaises(ch09_roman.OutOfRangeError, ch09_roman.to_roman, 4000)
     def test_zero(self):
-        self.assertRaises(ch09_roman1.OutOfRangeError, ch09_roman1.to_roman, 0)
+        self.assertRaises(ch09_roman.OutOfRangeError, ch09_roman.to_roman, 0)
     def test_negative(self):
-        self.assertRaises(ch09_roman1.OutOfRangeError, ch09_roman1.to_roman, -1)
+        self.assertRaises(ch09_roman.OutOfRangeError, ch09_roman.to_roman, -1)
     def test_not_integer(self):
-        self.assertRaises(ch09_roman1.NotIntegerError, ch09_roman1.to_roman, 0.5)
+        self.assertRaises(ch09_roman.NotIntegerError, ch09_roman.to_roman, 0.5)
 
 class FromRomanBadInput(unittest.TestCase):
     def test_too_many_repeated_numerals(self):
         '''from_roman should fail with too many repeated numerals'''
         for s in ('MMMM', 'DD', 'CCCC', 'LL', 'XXXX', 'VV', 'IIII'):
-            self.assertRaises(ch09_roman1.InvalidRomanNumeralError, ch09_roman1.from_roman, s)
+            self.assertRaises(ch09_roman.InvalidRomanNumeralError, ch09_roman.from_roman, s)
     def test_repeated_pairs(self):
         '''from_roman should fail with repeated pairs of numerals'''
         for s in ('CMCM', 'CDCD', 'XCXC', 'XLXL', 'IXIX', 'IVIV'):
-            self.assertRaises(ch09_roman1.InvalidRomanNumeralError, ch09_roman1.from_roman, s)
+            self.assertRaises(ch09_roman.InvalidRomanNumeralError, ch09_roman.from_roman, s)
 
             
     def test_malformed_antecedents(self):
         '''from_roman should fail with malformed antecedents'''
         for s in ('IIMXCC', 'VX', 'DCM', 'CMM', 'IXIV',
                   'MCMC', 'XCX', 'IVI', 'LM', 'LD', 'LC'):
-            self.assertRaises(ch09_roman1.InvalidRomanNumeralError, ch09_roman1.from_roman, s)
+            self.assertRaises(ch09_roman.InvalidRomanNumeralError, ch09_roman.from_roman, s)
 
 
 if __name__ == '__main__':
