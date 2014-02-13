@@ -81,7 +81,7 @@ print('median =', numpy.median( randoms ))
 # 分散
 print('var =', numpy.var( randoms ))
 # 標準偏差
-print('var =', numpy.std( randoms ))
+print('std =', numpy.std( randoms ))
 
 # 自力で平均を求めると
 avg = randoms.sum()/len(randoms)
