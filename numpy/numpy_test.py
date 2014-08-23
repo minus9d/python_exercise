@@ -13,6 +13,7 @@ print(numpy.version.version)
 
 # ndarrayオブジェクトの生成にはarray()を使う
 # arrayという型があるわけではないので注意
+# ndarrayはN-dimensional arrayの略
 a = numpy.array([1,2,3,4,5])
 print(a)
 # 型はndarray
