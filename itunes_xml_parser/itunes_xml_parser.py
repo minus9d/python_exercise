@@ -6,11 +6,11 @@ Example:
    python itunes_xml_parse.py (itunes_xml_path)
 """
 
-
 import os
 import sys
-import pickle
-import xml.etree.ElementTree as etree 
+
+import xml.etree.ElementTree as etree_dummy
+from lxml import etree
 
 def usage():
     print("usage: {0} (itunes_xml_path)".format(sys.argv[0]))
@@ -26,24 +26,15 @@ if __name__ == '__main__':
         usage()
         sys.exit(0)
 
+    # XMLを読み込み
+    xml_path = sys.argv[1]
+    tree = etree.parse(xml_path)
 
-    tree = None
-    pickle_filename  = 'xml.pickle'
-
-    if os.path.exists(pickle_filename):
-        with open(pickle_filename, 'rb') as f:
-            tree = pickle.load(f)  
-        
-    else:
-        xml_path = sys.argv[1]
-        print(xml_path)
-        tree = etree.parse(xml_path)
-        
-        with open(pickle_filename, 'wb') as f:
-            pickle.dump(tree, f)
     
     root = tree.getroot()
     print(tree)
+
+    sys.exit()
 
     # root = "dict"
     # print(root)
@@ -62,7 +53,7 @@ if __name__ == '__main__':
             print(c2.text)
             
 
-    #dfs(root, 1)
+    dfs(root, 1)
 
     # いい感じ
     songs = root.findall('./dict/dict/dict')
