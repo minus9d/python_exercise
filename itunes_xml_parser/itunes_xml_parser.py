@@ -8,6 +8,7 @@ Example:
 
 import os
 import sys
+import collections
 
 import xml.etree.ElementTree as etree_dummy
 from lxml import etree
@@ -21,6 +22,38 @@ def dfs(root, depth):
         print ("  " * depth, child.tag, ": ", child.text )
         dfs(child, depth + 1)
 
+def artists_with_many_songs(song_info_list, top = 10):
+    # 情報抽出
+    counter = collections.Counter()
+    for song_info in song_info_list:
+        # たまに"Artist"の項目が空のことがある
+        if "Artist" not in song_info:
+            continue
+        # podcastは除外
+        elif "Genre" in song_info and song_info["Genre"] == "Podcast":
+            continue
+
+        counter[ song_info["Artist"] ] += 1
+
+    # 曲数の多い順にソート
+    top_ranked = sorted(counter, key=counter.get, reverse=True)[:top]
+    return [(k, counter[k]) for k in top_ranked]
+    
+def most_played_songs(song_info_list, top = 10):
+    top_ranked = sorted(song_info_list, key=lambda s: int(s.get("Play Count", "0")), reverse=True)[:top]
+    return [ (i.get("Name", ""), i.get("Play Count", "0")) for i in top_ranked ]
+    
+def release_year(song_info_list):
+    release_year = collections.Counter()
+    for song_info in song_info_list:
+        if "Year" in song_info:
+            y = int(song_info["Year"])
+            release_year[y] = release_year.get(y, 0) + 1
+    return release_year
+
+def play_times_histogram(song_info_list):
+    pass
+    
 if __name__ == '__main__':
     if len(sys.argv) < 2:
         usage()
@@ -54,25 +87,15 @@ if __name__ == '__main__':
         
     print(len(song_info_list))
 
-    # 情報抽出
-    artist_counter = {}
-    for song_info in song_info_list:
-        # たまに"Artist"の項目が空のことがある
-        if "Artist" not in song_info:
-            continue
-        # podcastは除外
-        elif "Genre" in song_info and song_info["Genre"] == "Podcast":
-            continue
+    print(artists_with_many_songs(song_info_list, 10))
 
-        artist_counter[ song_info["Artist"] ] = artist_counter.get( song_info["Artist"], 0 ) + 1
+    print(most_played_songs(song_info_list, 10))
 
-    # print( artist_counter )
+    
 
-    # ソート
-    for i, k in enumerate(sorted(artist_counter, key=artist_counter.get, reverse=True)):
-        if i >= 10: break
-        # PodCastはスキップ
-        print (k, artist_counter[k])
+    print(release_year(song_info_list))
+
+    
         
     
 
