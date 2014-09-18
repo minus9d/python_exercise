@@ -43,13 +43,23 @@ def most_played_songs(song_info_list, top = 10):
     top_ranked = sorted(song_info_list, key=lambda s: int(s.get("Play Count", "0")), reverse=True)[:top]
     return [ (i.get("Name", ""), i.get("Play Count", "0")) for i in top_ranked ]
     
-def most_played_artists(song_info_list, top = 10):
+def most_played_artists(song_info_list, top = 10, per_song = False):
     artist2play = collections.Counter()
+    artist2song = collections.Counter()
     for song_info in song_info_list:
         if "Artist" in song_info and "Play Count" in song_info:
             artist2play[ song_info["Artist"] ] += int(song_info["Play Count"])
+            artist2song[ song_info["Artist"] ] += 1
 
-    return artist2play.most_common(top)
+    if per_song:
+        artist2playpersong = {}
+        for key in artist2play:
+            artist2playpersong[ key ] = artist2play[ key ] / artist2song[ key ]
+        top_ranked = sorted(artist2playpersong, key=artist2playpersong.get, reverse=True)[:top]
+        
+        return [ ( a, artist2playpersong[a] ) for a in top_ranked ]
+    else:
+        return artist2play.most_common(top)
     
 def release_year(song_info_list):
     release_year = collections.Counter()
@@ -96,11 +106,13 @@ if __name__ == '__main__':
         
     print(len(song_info_list))
 
-    print(artists_with_many_songs(song_info_list, 30))
+    print(artists_with_many_songs(song_info_list, 10))
 
-    print(most_played_songs(song_info_list, 30))
+    print(most_played_songs(song_info_list, 10))
 
-    print(most_played_artists(song_info_list, 30))
+    print(most_played_artists(song_info_list, 10))
+
+    print(most_played_artists(song_info_list, 10, per_song = True))
 
     print(release_year(song_info_list))
 
