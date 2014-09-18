@@ -13,6 +13,7 @@ import collections
 import xml.etree.ElementTree as etree_dummy
 from lxml import etree
 
+
 def usage():
     print("usage: {0} (itunes_xml_path)".format(sys.argv[0]))
 
@@ -23,7 +24,7 @@ def dfs(root, depth):
         dfs(child, depth + 1)
 
 def artists_with_many_songs(song_info_list, top = 10):
-    # 情報抽出
+
     counter = collections.Counter()
     for song_info in song_info_list:
         # たまに"Artist"の項目が空のことがある
@@ -35,13 +36,20 @@ def artists_with_many_songs(song_info_list, top = 10):
 
         counter[ song_info["Artist"] ] += 1
 
-    # 曲数の多い順にソート
-    top_ranked = sorted(counter, key=counter.get, reverse=True)[:top]
-    return [(k, counter[k]) for k in top_ranked]
+    # 曲数の多いものの上位top個を返す
+    return counter.most_common(10)
     
 def most_played_songs(song_info_list, top = 10):
     top_ranked = sorted(song_info_list, key=lambda s: int(s.get("Play Count", "0")), reverse=True)[:top]
     return [ (i.get("Name", ""), i.get("Play Count", "0")) for i in top_ranked ]
+    
+def most_played_artists(song_info_list, top = 10):
+    artist2play = collections.Counter()
+    for song_info in song_info_list:
+        if "Artist" in song_info and "Play Count" in song_info:
+            artist2play[ song_info["Artist"] ] += int(song_info["Play Count"])
+
+    return artist2play.most_common(top)
     
 def release_year(song_info_list):
     release_year = collections.Counter()
@@ -78,6 +86,7 @@ if __name__ == '__main__':
             if element.tag == "key":
                 key = element.text
             else:
+                # TODO: keyの種類によって, 文字列から適切な型に変換すべき
                 song_info[ key ] = element.text
         song_info_list.append( song_info )
 
@@ -87,11 +96,11 @@ if __name__ == '__main__':
         
     print(len(song_info_list))
 
-    print(artists_with_many_songs(song_info_list, 10))
+    print(artists_with_many_songs(song_info_list, 30))
 
-    print(most_played_songs(song_info_list, 10))
+    print(most_played_songs(song_info_list, 30))
 
-    
+    print(most_played_artists(song_info_list, 30))
 
     print(release_year(song_info_list))
 
