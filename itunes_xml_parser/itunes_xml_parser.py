@@ -9,6 +9,7 @@ Example:
 import os
 import sys
 import collections
+import pickle
 
 import xml.etree.ElementTree as etree_dummy
 from lxml import etree
@@ -17,6 +18,35 @@ from lxml import etree
 def usage():
     print("usage: {0} (itunes_xml_path)".format(sys.argv[0]))
 
+
+def read_song_info_list_from_xml( xml_path ):
+    # XMLを読み込み
+    tree = etree.parse(xml_path)
+    
+    root = tree.getroot()
+
+    # dfs(root, 1)
+
+    songs = root.findall('./dict/dict/dict')
+
+    # 曲ごとの情報を取得
+    song_info_list = [] 
+    for song in songs:
+        song_info = {}
+        key = ""
+        for element in song:
+            if element.tag == "key":
+                key = element.text
+            else:
+                # TODO: keyの種類によって, 文字列から適切な型に変換すべき
+                song_info[ key ] = element.text
+        song_info_list.append( song_info )
+
+        # for k,v in song_info.items():
+        #     print(k, ": ", v)
+
+    return song_info_list
+    
 
 def dfs(root, depth):
     for child in root:
@@ -77,33 +107,17 @@ if __name__ == '__main__':
         usage()
         sys.exit(0)
 
-    # XMLを読み込み
-    xml_path = sys.argv[1]
-    tree = etree.parse(xml_path)
-    
-    root = tree.getroot()
-
-    # dfs(root, 1)
-
-    songs = root.findall('./dict/dict/dict')
-
-    # 曲ごとの情報を取得
-    song_info_list = [] 
-    for song in songs:
-        song_info = {}
-        key = ""
-        for element in song:
-            if element.tag == "key":
-                key = element.text
-            else:
-                # TODO: keyの種類によって, 文字列から適切な型に変換すべき
-                song_info[ key ] = element.text
-        song_info_list.append( song_info )
-
-        # for k,v in song_info.items():
-        #     print(k, ": ", v)
+    pickle_filename  = 'song_info_list.pickle'
+    if os.path.exists(pickle_filename):
+        with open(pickle_filename, 'rb') as f:
+            song_info_list = pickle.load(f)
+    else:
+        xml_path = sys.argv[1]
+        song_info_list = read_song_info_list_from_xml( xml_path )
+        with open(pickle_filename, 'wb') as f:
+            pickle.dump(song_info_list, f)
         
-        
+
     print(len(song_info_list))
 
     print(artists_with_many_songs(song_info_list, 10))
