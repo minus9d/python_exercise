@@ -74,13 +74,14 @@ def most_played_songs(song_info_list, top = 10):
     return [ (i.get("Name", ""), i.get("Play Count", "0")) for i in top_ranked ]
 
 # 共通部分のくくりだし
-def most_played_items(song_info_list, tag, top = 10, per_song = False):
+def most_played_items(song_info_list, tags, top = 10, per_song = False):
     item2play = collections.Counter()
     item2song = collections.Counter()
     for song_info in song_info_list:
-        if tag in song_info and "Play Count" in song_info:
-            item2play[ song_info[tag] ] += int(song_info["Play Count"])
-            item2song[ song_info[tag] ] += 1
+        if all(tag in song_info for tag in tags) and "Play Count" in song_info:
+            key = tuple( [song_info[tag] for tag in tags] )
+            item2play[ key ] += int(song_info["Play Count"])
+            item2song[ key ] += 1
 
     if per_song:
         item2playpersong = {}
@@ -93,10 +94,10 @@ def most_played_items(song_info_list, tag, top = 10, per_song = False):
         return item2play.most_common(top)
     
 def most_played_artists(song_info_list, top = 10, per_song = False):
-    return most_played_items(song_info_list, "Artist", top, per_song)
+    return most_played_items(song_info_list, ["Artist"], top, per_song)
 
 def most_played_albums(song_info_list, top = 10, per_song = False):
-    return most_played_items(song_info_list, "Album", top, per_song)
+    return most_played_items(song_info_list, ["Artist", "Album"], top, per_song)
 
         
 def release_year(song_info_list):
