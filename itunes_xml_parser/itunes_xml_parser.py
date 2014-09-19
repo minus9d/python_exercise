@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""parse iTunes XML
-Example:
+"""
+parse an iTunes XML and extract information
+
+Usage:
    python itunes_xml_parse.py (itunes_xml_path)
 """
 
@@ -15,10 +17,6 @@ import xml.etree.ElementTree as etree_dummy
 from lxml import etree
 
 
-def usage():
-    print("usage: {0} (itunes_xml_path)".format(sys.argv[0]))
-
-
 def read_song_info_list_from_xml( xml_path ):
     # XMLを読み込み
     tree = etree.parse(xml_path)
@@ -27,7 +25,7 @@ def read_song_info_list_from_xml( xml_path ):
 
     # dfs(root, 1)
 
-    songs = root.findall('./dict/dict/dict')
+    songs = root.findall('dict/dict/dict')
 
     # 曲ごとの情報を取得
     song_info_list = [] 
@@ -103,6 +101,10 @@ def most_played_albums(song_info_list, top = 10, per_song = False):
 def release_year(song_info_list):
     release_year = collections.Counter()
     for song_info in song_info_list:
+        if "Artist" in song_info and "Beatles" in song_info["Artist"]:
+            print (song_info)
+            break
+        
         if "Year" in song_info:
             y = int(song_info["Year"])
             release_year[y] = release_year.get(y, 0) + 1
@@ -113,7 +115,7 @@ def play_times_histogram(song_info_list):
     
 if __name__ == '__main__':
     if len(sys.argv) < 2:
-        usage()
+        print(__doc__)
         sys.exit(0)
 
     pickle_filename  = 'song_info_list.pickle'
