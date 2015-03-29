@@ -4,7 +4,7 @@
 import sys
 from PyQt5.QtWidgets import (QWidget,
                              QGridLayout, QHBoxLayout, QVBoxLayout,
-                             QLabel, QLineEdit, QTextEdit,
+                             QLabel, QLineEdit, QPlainTextEdit,
                              QTableWidget,
                              QTableWidgetItem,
                              QPushButton,
@@ -61,12 +61,12 @@ class Example(QWidget):
 
     def initUI(self):
 
-        api_label = QLabel("Yahoo アプリケーションID")
+        api_label = QLabel("Yahoo! アプリケーションID")
         api_lineedit = QLineEdit()
         self.api_lineedit = api_lineedit
 
         text_label = QLabel("解析したい日本語")
-        text_textedit = QTextEdit()
+        text_textedit = QPlainTextEdit()
         self.text_textedit = text_textedit
 
         grid = QGridLayout()
@@ -101,8 +101,8 @@ class Example(QWidget):
 
         self.setLayout(vbox)
 
-        self.setGeometry(300, 300, 700, 550)
-        self.setWindowTitle('Yahoo形態素解析のデモ')
+        self.setGeometry(100, 100, 700, 550)
+        self.setWindowTitle('Yahoo! 形態素解析のデモ')
         self.show()
 
 if __name__ == '__main__':
