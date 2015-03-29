@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import sys
@@ -7,7 +7,10 @@ from PyQt5.QtWidgets import (QWidget,
                              QLabel, QLineEdit, QTextEdit,
                              QTableWidget,
                              QTableWidgetItem,
-                             QPushButton, QApplication)
+                             QPushButton,
+                             QMessageBox,
+                             QApplication)
+
 from PyQt5.QtCore import Qt
 import urllib.request, urllib.parse, urllib.error
 from bs4 import BeautifulSoup
@@ -34,9 +37,21 @@ class Example(QWidget):
         self.initUI()
 
     def buttonClicked(self):
-        result = morph(self.text_lineedit.toPlainText(), appid=self.api_lineedit.text())
 
-        ans = ""
+        # ユーザが入力した文字列を形態素解析
+        try:
+            result = morph(self.text_textedit.toPlainText(), appid=self.api_lineedit.text())
+        except urllib.error.HTTPError:
+            reply = QMessageBox.question(
+                self,
+                'Error',
+                '形態素解析結果の取得に失敗しました。アプリケーションIDは正しくセットされていますか？',
+                QMessageBox.Ok,
+                QMessageBox.Ok
+                )
+            return
+
+        # テーブルに結果を出力
         self.result_table.setRowCount( len(result) + 1 )
         for i, (word, reading, pos) in enumerate(result):
             self.result_table.setItem(i+1, 0, QTableWidgetItem(word))
@@ -46,43 +61,43 @@ class Example(QWidget):
 
     def initUI(self):
 
-        api_label = QLabel("Yahoo API")
-        self.api_lineedit = QLineEdit()
-        hbox1 = QHBoxLayout()
-        hbox1.addWidget(api_label)
-        hbox1.addWidget(self.api_lineedit)
+        api_label = QLabel("Yahoo アプリケーションID")
+        api_lineedit = QLineEdit()
+        self.api_lineedit = api_lineedit
 
         text_label = QLabel("解析したい日本語")
-        self.text_lineedit = QTextEdit()
-        hbox2 = QHBoxLayout()
-        hbox2.addWidget(text_label)
-        hbox2.addWidget(self.text_lineedit)
+        text_textedit = QTextEdit()
+        self.text_textedit = text_textedit
+
+        grid = QGridLayout()
+        grid.addWidget(api_label, 0, 0)
+        grid.addWidget(api_lineedit, 0, 1)
+        grid.addWidget(text_label, 1, 0)
+        grid.addWidget(text_textedit, 1, 1)
 
         go_button = QPushButton("Go")
         go_button.clicked.connect(self.buttonClicked)
-        hbox3 = QHBoxLayout()
-        hbox3.addStretch(1)
-        hbox3.addWidget(go_button)
-        hbox3.addStretch(1)
+        hbox1 = QHBoxLayout()
+        hbox1.addStretch(1)
+        hbox1.addWidget(go_button)
+        hbox1.addStretch(1)
 
         result_label = QLabel("解析結果")
-        #self.result_lineedit = QTextEdit()
-        #self.result_lineedit.setEnabled(False)
-        self.result_table = QTableWidget()
-        self.result_table.setColumnCount(3)
-        self.result_table.setRowCount(1)
-        self.result_table.setItem(0, 0, QTableWidgetItem("表記"))
-        self.result_table.setItem(0, 1, QTableWidgetItem("読みがな"))
-        self.result_table.setItem(0, 2, QTableWidgetItem("品詞"))
-        hbox4 = QHBoxLayout()
-        hbox4.addWidget(result_label)
-        hbox4.addWidget(self.result_table)
+        result_table = QTableWidget()
+        result_table.setColumnCount(3)
+        result_table.setRowCount(1)
+        result_table.setItem(0, 0, QTableWidgetItem("表記"))
+        result_table.setItem(0, 1, QTableWidgetItem("読みがな"))
+        result_table.setItem(0, 2, QTableWidgetItem("品詞"))
+        self.result_table = result_table
+        hbox2 = QHBoxLayout()
+        hbox2.addWidget(result_label)
+        hbox2.addWidget(result_table)
 
         vbox = QVBoxLayout()
+        vbox.addLayout(grid)
         vbox.addLayout(hbox1)
         vbox.addLayout(hbox2)
-        vbox.addLayout(hbox3)
-        vbox.addLayout(hbox4)
 
         self.setLayout(vbox)
 
