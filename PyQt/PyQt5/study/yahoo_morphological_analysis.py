@@ -78,6 +78,7 @@ class Example(QWidget):
         grid.addWidget(text_textedit, 1, 1)
 
         go_button = QPushButton("Go")
+        go_button.setAutoDefault(True) # 
         go_button.clicked.connect(self.buttonClicked)
         hbox1 = QHBoxLayout()
         hbox1.addStretch(1)
