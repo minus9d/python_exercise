@@ -40,7 +40,7 @@ class Example(QWidget):
 
         # ユーザが入力した文字列を形態素解析
         try:
-            result = morph(self.text_textedit.toPlainText(), appid=self.api_lineedit.text())
+            result = morph(self.text_textedit.toPlainText(), appid=self.api_lineedit.text().strip())
         except urllib.error.HTTPError:
             reply = QMessageBox.question(
                 self,
