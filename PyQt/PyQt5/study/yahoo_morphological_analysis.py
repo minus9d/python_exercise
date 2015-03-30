@@ -68,6 +68,7 @@ class Example(QWidget):
 
         text_label = QLabel("解析したい日本語")
         text_textedit = QPlainTextEdit()
+        text_textedit.setTabChangesFocus(True)
         self.text_textedit = text_textedit
 
         grid = QGridLayout()
