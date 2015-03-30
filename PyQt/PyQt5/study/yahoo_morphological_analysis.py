@@ -63,6 +63,7 @@ class Example(QWidget):
 
         api_label = QLabel("Yahoo! アプリケーションID")
         api_lineedit = QLineEdit()
+        api_lineedit.setEchoMode(QLineEdit.Password)
         self.api_lineedit = api_lineedit
 
         text_label = QLabel("解析したい日本語")
