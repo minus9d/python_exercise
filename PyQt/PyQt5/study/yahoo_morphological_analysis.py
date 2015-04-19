@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import sys
@@ -22,12 +22,14 @@ def morph(sentence, appid, results="ma", filter="1|2|3|4|5|6|7|8|9|10|11|12|13")
 
     # 文章をURLエンコーディング
     sentence = urllib.parse.quote_plus(sentence.encode("utf-8"))
-    query = "%s?appid=%s&results=%s&filter=%s&sentence=%s" % (pageurl, appid, results, filter, sentence)
+    response = "surface,reading,pos,baseform"
+    query = "%s?appid=%s&results=%s&filter=%s&sentence=%s&response=%s" \
+            % (pageurl, appid, results, filter, sentence, response)
     res = urllib.request.urlopen(query)
 
     soup = BeautifulSoup(res.read())
     # print(soup.prettify())
-    return [(w.surface.string, w.reading.string, w.pos.string)
+    return [(w.surface.string, w.reading.string, w.baseform.string, w.pos.string)
             for w in soup.ma_result.word_list]
 
 class Example(QWidget):
@@ -53,10 +55,11 @@ class Example(QWidget):
 
         # テーブルに結果を出力
         self.result_table.setRowCount( len(result) + 1 )
-        for i, (word, reading, pos) in enumerate(result):
+        for i, (word, reading, baseform, pos) in enumerate(result):
             self.result_table.setItem(i+1, 0, QTableWidgetItem(word))
             self.result_table.setItem(i+1, 1, QTableWidgetItem(reading))
-            self.result_table.setItem(i+1, 2, QTableWidgetItem(pos))
+            self.result_table.setItem(i+1, 2, QTableWidgetItem(baseform))
+            self.result_table.setItem(i+1, 3, QTableWidgetItem(pos))
 
 
     def initUI(self):
@@ -87,11 +90,12 @@ class Example(QWidget):
 
         result_label = QLabel("解析結果")
         result_table = QTableWidget()
-        result_table.setColumnCount(3)
+        result_table.setColumnCount(4)
         result_table.setRowCount(1)
         result_table.setItem(0, 0, QTableWidgetItem("表記"))
         result_table.setItem(0, 1, QTableWidgetItem("読みがな"))
-        result_table.setItem(0, 2, QTableWidgetItem("品詞"))
+        result_table.setItem(0, 2, QTableWidgetItem("基本形表記"))
+        result_table.setItem(0, 3, QTableWidgetItem("品詞"))
         self.result_table = result_table
         hbox2 = QHBoxLayout()
         hbox2.addWidget(result_label)
