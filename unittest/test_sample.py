@@ -6,7 +6,9 @@
 
 import unittest
 
+
 class Test(unittest.TestCase):
+
     def test_it(self):
         import doctest_sample
         self.assertEqual(15, doctest_sample.add_to_n(5))
