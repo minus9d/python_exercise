@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from bottle import route, run, get, post, run, request, template
+from bottle import route, run, get, post, run, request, template, response
 
 @route('/hello/world')
 def hello():
@@ -46,6 +46,12 @@ def show_file():
         'file_name={{file_name}}.',
         file_name=upload_file.file_name)
 
+@get('/set_response')
+def set_response():
+    response.status = 200
+    response.set_header("Cache-Control", "max-age=0")
+    response.set_cookie("spam", "egg")
+    
 
 # @get('/itmes')
 # def lists():
