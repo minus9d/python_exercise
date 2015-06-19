@@ -51,7 +51,10 @@ def set_response():
     response.status = 200
     response.set_header("Cache-Control", "max-age=0")
     response.set_cookie("spam", "egg")
-    
+
+@route('/show/<id>')
+def show(id):
+    return template('show', id=id)
 
 # @get('/itmes')
 # def lists():
