@@ -94,6 +94,8 @@ def main():
     print("df:", df) # pandasの操作を行うときはdfを使う
     print("header:", header)
     print("data:", data)
+    print("type(df):", type(df))
+    print("type(header):", type(header))
     print("type(data):", type(data))
     print()
 
@@ -123,5 +125,6 @@ def main():
     print("header:", header)
     print("data:", data)
     print()
+
 
 main()
